@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 361586696}
   - component: {fileID: 361586695}
   - component: {fileID: 361586694}
+  - component: {fileID: 361586699}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -198,7 +199,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 80
+  field of view: 60
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -222,13 +223,32 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 361586693}
-  m_LocalRotation: {x: 0.10452846, y: -0, z: -0, w: 0.9945219}
-  m_LocalPosition: {x: 0, y: 4.5, z: -8.42}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5, z: -9.11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 463666292}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 12, y: 0, z: 0}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &361586699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 361586693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a8f19c93aeee454c84f963be86cb43a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Batmobile: {fileID: 463666291}
+  PlayerInput: {fileID: 463666294}
+  yawAngle: 15
+  pitchAngle: 12
+  dampening: 5
+  cameraDepthOffset: -10
+  cameraHeightOffset: 6
+  cameraPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &463666291 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 100002, guid: b8a3531b6da62fe4789107f4d5213c3a, type: 3}
@@ -253,9 +273,11 @@ MonoBehaviour:
   RL: {fileID: 1762084040}
   RR: {fileID: 1125544200}
   maxTorque: 2000
-  maxTurnAngle: 35
+  maxTurnAngle: 34.003113
   steerFactor: 0.6
   breakingTorque: 3000
+  appliedTorque: 0
+  appliedTurnAngle: 0
   combatMoveSpeed: 10
 --- !u!114 &463666294
 MonoBehaviour:
@@ -273,6 +295,8 @@ MonoBehaviour:
   handbrake: 0
   combatMode: 0
   combatInput: {x: 0, y: 0, z: 0}
+  mouseXInput: 0
+  mouseSensitivity: 1
 --- !u!65 &463666295
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -363,7 +387,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &892531636
 GameObject:
@@ -445,7 +469,7 @@ Transform:
   m_LocalScale: {x: 1000, y: 1, z: 1000}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1125544199
 GameObject:
@@ -542,7 +566,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: b8a3531b6da62fe4789107f4d5213c3a, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: b8a3531b6da62fe4789107f4d5213c3a, type: 3}
       propertyPath: m_Name
@@ -550,7 +574,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: b8a3531b6da62fe4789107f4d5213c3a, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b8a3531b6da62fe4789107f4d5213c3a, type: 3}
@@ -669,7 +693,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 2
   m_Enabled: 1
 --- !u!1 &1927041990
 GameObject:
@@ -727,5 +751,5 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 2
   m_Enabled: 1

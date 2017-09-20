@@ -11,7 +11,9 @@ public class BatmobileInput : MonoBehaviour {
 
     public bool combatMode;
     public Vector3 combatInput;
-	
+
+    public float mouseXInput;
+    public float mouseSensitivity;
 
     void Start()
     {
@@ -20,8 +22,11 @@ public class BatmobileInput : MonoBehaviour {
     }
 
 	void Update () {
+
         accelerationInput = Input.GetAxis("Vertical");
         turnInput = Input.GetAxis("Horizontal");
+        mouseXInput = Input.GetAxis("Mouse X") * mouseSensitivity;
+
         if (Input.GetKey(KeyCode.Space))
         {
             handbrake = true;
@@ -42,4 +47,5 @@ public class BatmobileInput : MonoBehaviour {
             combatInput = Vector3.zero;
         }
     }
+
 }
