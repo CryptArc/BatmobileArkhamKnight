@@ -20,7 +20,7 @@ public class FollowBatmobile : MonoBehaviour {
         if (PlayerInput.combatMode)
         {
             //Convert mouse x input to rotation along camera's y axis and multiply it with current camera's rotation
-            Camera.main.transform.rotation *= Quaternion.AngleAxis(PlayerInput.mouseXInput, Vector3.up);
+            Camera.main.transform.rotation *= Quaternion.AngleAxis(PlayerInput.lookInput, Vector3.up);
 
             //Calculate camera position based on Camera's rotation and offset it from Batmobile's position
             cameraPosition = new Vector3(Batmobile.transform.position.x + Mathf.Sin(Camera.main.transform.localEulerAngles.y * Mathf.PI / 180) * cameraDepthOffset, cameraHeightOffset, Batmobile.transform.position.z + Mathf.Cos(Camera.main.transform.localEulerAngles.y * Mathf.PI / 180) * cameraDepthOffset); 
@@ -39,5 +39,13 @@ public class FollowBatmobile : MonoBehaviour {
         Camera.main.transform.position = Vector3.Lerp(gameObject.transform.position, cameraPosition, dampening * Time.fixedDeltaTime);
 
 
+    }
+
+    void Update()
+    {
+        if (PlayerInput.combatMode)
+            dampening = 7.0f;
+        else
+            dampening = 15.0f;
     }
 }

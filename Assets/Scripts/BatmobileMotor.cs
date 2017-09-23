@@ -22,7 +22,13 @@ public class BatmobileMotor : MonoBehaviour {
     public float appliedTurnAngle;
 
     public float combatMoveSpeed;
-    
+
+    public float combatBoost;
+    public float driveBoost;
+    public float driveBoostTime;
+
+    public GameObject Weapon;
+
     void Start () {
         PlayerInput = GetComponent<BatmobileInput>();
         batmobileRB = GetComponent<Rigidbody>();
@@ -33,9 +39,17 @@ public class BatmobileMotor : MonoBehaviour {
     void Drive()
     {
         //Adjust steer angle accordingly with speed
-        maxTurnAngle = Mathf.Pow(steerFactor, batmobileRB.velocity.magnitude / 8) * 35;
+        maxTurnAngle = 25;//Mathf.Pow(steerFactor, batmobileRB.velocity.magnitude / 8) * 35 < 25 ? 25: Mathf.Pow(steerFactor, batmobileRB.velocity.magnitude / 8) * 35;
+        if (PlayerInput.boost && driveBoostTime > 0)
+        {
+            batmobileRB.AddForce(batmobileRB.transform.forward * driveBoost, ForceMode.VelocityChange);
+            driveBoostTime -= Time.fixedDeltaTime * 2;
+        }
 
-        appliedTorque = maxTorque * PlayerInput.accelerationInput;
+        if (batmobileRB.velocity.magnitude < 150)
+            appliedTorque = maxTorque * PlayerInput.accelerationInput;
+        else
+            appliedTorque = 0;
         appliedTurnAngle = maxTurnAngle * PlayerInput.turnInput;
 
         if (appliedTorque == 0)
@@ -57,6 +71,8 @@ public class BatmobileMotor : MonoBehaviour {
         {
             FL.motorTorque = appliedTorque;
             FR.motorTorque = appliedTorque;
+            RL.motorTorque = appliedTorque;
+            RR.motorTorque = appliedTorque;
         }
 
         if (appliedTurnAngle != 0)
@@ -79,13 +95,25 @@ public class BatmobileMotor : MonoBehaviour {
 
     void CombatMovement()
     {
+        
         if (batmobileRB.velocity.magnitude > 0)
         {
-            batmobileRB.velocity = Vector3.zero;
+            batmobileRB.velocity = Vector3.LerpUnclamped(batmobileRB.velocity, Vector3.zero, Time.fixedDeltaTime * 5);
+            FL.brakeTorque = breakingTorque;
+            FR.brakeTorque = breakingTorque;
         }
+        if (PlayerInput.boost && combatBoost > 0)
+        {
+            batmobileRB.MovePosition(batmobileRB.transform.position + transform.TransformDirection(PlayerInput.combatInput) * combatMoveSpeed * combatBoost * Time.fixedDeltaTime);
+            combatBoost -= Time.fixedDeltaTime * 15;
+        }
+        else
+            batmobileRB.MovePosition(batmobileRB.transform.position + transform.TransformDirection(PlayerInput.combatInput) * combatMoveSpeed * Time.fixedDeltaTime);
 
-        batmobileRB.MovePosition(batmobileRB.transform.position + transform.TransformDirection(PlayerInput.combatInput) * combatMoveSpeed * Time.fixedDeltaTime);
-        batmobileRB.MoveRotation(Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, Vector3.up));
+        if (PlayerInput.combatInput.magnitude != 0)
+            batmobileRB.rotation = Quaternion.Lerp(batmobileRB.rotation, Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, Vector3.up), Time.fixedDeltaTime * 5);// (Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, Vector3.up));
+
+        Weapon.transform.rotation = Camera.main.transform.rotation;
     }
 
     void FixedUpdate () {
@@ -94,8 +122,18 @@ public class BatmobileMotor : MonoBehaviour {
             CombatMovement();
         else
             Drive();
+
     }
 
+    void Update()
+    {
+        if (Input.GetButtonUp("Boost"))
+        {
+            combatBoost = 4f;
+        }
+        if(!PlayerInput.boost && driveBoostTime < 3)
+            driveBoostTime += Time.deltaTime * 0.7f;
+    }
 
     void OnDrawGizmos()
     {
