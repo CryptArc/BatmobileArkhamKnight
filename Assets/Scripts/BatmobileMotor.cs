@@ -75,11 +75,17 @@ public class BatmobileMotor : MonoBehaviour {
             RR.motorTorque = appliedTorque;
         }
 
-        if (appliedTurnAngle != 0)
+        if (appliedTorque == 0 && appliedTurnAngle != 0 && (int)batmobileRB.velocity.magnitude == 0)
+        {
+            batmobileRB.rotation *= Quaternion.AngleAxis(PlayerInput.turnInput, Vector3.up);
+        }
+        else if (appliedTurnAngle != 0)
         {
             FL.steerAngle = appliedTurnAngle;
             FR.steerAngle = appliedTurnAngle;
         }
+        
+
 
         if (PlayerInput.handbrake)
         {
@@ -104,14 +110,28 @@ public class BatmobileMotor : MonoBehaviour {
         }
         if (PlayerInput.boost && combatBoost > 0)
         {
-            batmobileRB.MovePosition(batmobileRB.transform.position + transform.TransformDirection(PlayerInput.combatInput) * combatMoveSpeed * combatBoost * Time.fixedDeltaTime);
+            //Get absolute value of dodge axes, use max(x,z) as the direction of combat dodge
+            var dirToDodge = Mathf.Abs(PlayerInput.combatInput.x) > Mathf.Abs(PlayerInput.combatInput.z) ? 0 : 1;
+
+            //In each of the cases, normalizing the dodge direction to have a uniform effect
+            //Dodge in X-axis
+            if (dirToDodge == 0)
+            {
+                batmobileRB.MovePosition(batmobileRB.transform.position + transform.TransformDirection(new Vector3(PlayerInput.combatInput.x/Mathf.Abs(PlayerInput.combatInput.x),0, 0)) * combatMoveSpeed * combatBoost * Time.fixedDeltaTime);
+            }
+            //Dodge in Z axis
+            else if(dirToDodge == 1)
+            {
+                batmobileRB.MovePosition(batmobileRB.transform.position + transform.TransformDirection(new Vector3(0, 0, PlayerInput.combatInput.z/ Mathf.Abs(PlayerInput.combatInput.z))) * combatMoveSpeed * combatBoost * Time.fixedDeltaTime);
+            }
             combatBoost -= Time.fixedDeltaTime * 15;
         }
         else
             batmobileRB.MovePosition(batmobileRB.transform.position + transform.TransformDirection(PlayerInput.combatInput) * combatMoveSpeed * Time.fixedDeltaTime);
 
         if (PlayerInput.combatInput.magnitude != 0)
-            batmobileRB.rotation = Quaternion.Lerp(batmobileRB.rotation, Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, Vector3.up), Time.fixedDeltaTime * 5);// (Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, Vector3.up));
+            batmobileRB.rotation = Quaternion.Lerp(batmobileRB.rotation, Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, Vector3.up), Time.fixedDeltaTime * 5);
+        // (Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, Vector3.up));
 
         Weapon.transform.rotation = Camera.main.transform.rotation;
     }

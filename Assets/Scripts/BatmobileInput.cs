@@ -19,6 +19,7 @@ public class BatmobileInput : MonoBehaviour {
     public float sensitivity;
 
     public Animator turret;
+    public Animator weapons;
 
     public ParticleSystem weaponFlares;
     public AudioSource lightFireSound;
@@ -49,16 +50,17 @@ public class BatmobileInput : MonoBehaviour {
         if (Input.GetAxisRaw("Combat")!=0)
         {
             combatMode = true;
+            weapons.SetBool("isCombat", true);
             lightFire = Input.GetButton("Light Fire");
             heavyFire = Input.GetAxisRaw("Heavy Fire") != 0 ? true : false;
             combatInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         }
         else if(Input.GetAxisRaw("Combat") == 0)
         {
-            
+            combatMode = false;
+            weapons.SetBool("isCombat", false);
             accelerationInput = Input.GetAxis("Accel");
             turnInput = Input.GetAxis("Horizontal");
-            combatMode = false;
             combatInput = Vector3.zero;
             turret.SetBool("Fire", false);
             weaponFlares.Stop();
