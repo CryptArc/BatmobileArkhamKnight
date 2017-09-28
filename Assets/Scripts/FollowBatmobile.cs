@@ -14,7 +14,8 @@ public class FollowBatmobile : MonoBehaviour {
     public float cameraDepthOffset;
     public float cameraHeightOffset;
     public Vector3 cameraPosition;
-    
+
+
     void FixedUpdate()
     {
         if (PlayerInput.combatMode)
@@ -38,7 +39,19 @@ public class FollowBatmobile : MonoBehaviour {
         //Set camera's postion in a smooth interpolation
         Camera.main.transform.position = Vector3.Lerp(gameObject.transform.position, cameraPosition, dampening * Time.fixedDeltaTime);
 
+        if (Batmobile.GetComponent<BatmobileMotor>().isBoostable && PlayerInput.boost && !PlayerInput.combatMode)
+        {
+            CameraShake();
+        }
+       
 
+    }
+
+    void CameraShake()
+    {
+        Camera.main.transform.position = new Vector3(Camera.main.transform.position.x + Random.Range(-0.075f, 0.075f),
+                                                      Camera.main.transform.position.y,
+                                                      Camera.main.transform.position.z + Random.Range(-0.05f, 0.05f));
     }
 
     void Update()
